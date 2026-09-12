@@ -1,0 +1,27 @@
+{
+  "name": "清流记账",
+  "short_name": "清流记账",
+  "description": "简约清雅的个人记账与资产管理应用，涵盖流水明细、收支统计、快捷记账及资产总览。",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#eaf1ff",
+  "theme_color": "#eaf1ff",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
