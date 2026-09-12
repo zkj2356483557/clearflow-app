@@ -1,0 +1,6 @@
+{
+  "name": "清流记账",
+  "description": "简约清雅的个人记账与资产管理应用，涵盖流水明细、收支统计、快捷记账及资产总览。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
