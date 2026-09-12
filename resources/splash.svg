@@ -1,0 +1,70 @@
+<!-- 启动屏源文件（渲染成 2732×2732）。
+     storyboard 用 scaleAspectFill，手机竖屏下只显示中间约 46% 宽度，
+     所以 logo 与文字都必须收在中间 —— 这里全部控制在中心 1100px 内。 -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="2732" height="2732" role="img" aria-label="清流记账启动屏">
+  <defs>
+    <linearGradient id="sky" x1="512" y1="0" x2="512" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f2f7ff" />
+      <stop offset="0.55" stop-color="#e6efff" />
+      <stop offset="1" stop-color="#d8e6ff" />
+    </linearGradient>
+    <radialGradient id="halo" cx="512" cy="430" r="430" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.95" />
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="iconBg" x1="392" y1="300" x2="640" y2="560" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8ecbff" />
+      <stop offset="0.44" stop-color="#2f8cf7" />
+      <stop offset="1" stop-color="#0847b8" />
+    </linearGradient>
+    <linearGradient id="iconGloss" x1="516" y1="310" x2="516" y2="470" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.5" />
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="dropGrad" x1="516" y1="380" x2="516" y2="520" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff" />
+      <stop offset="1" stop-color="#d8e9ff" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1024" height="1024" fill="url(#sky)" />
+  <circle cx="512" cy="430" r="430" fill="url(#halo)" />
+
+  <!-- 图标：96 单位设计等比放大 3 倍，居中于 (516, 430) -->
+  <g transform="translate(372 286) scale(3)">
+    <rect width="96" height="96" rx="22" fill="url(#iconBg)" />
+    <rect width="96" height="58" rx="22" fill="url(#iconGloss)" />
+    <path
+      d="M48 21c9.5 10.1 16 18 16 26.3A16 16 0 0 1 48 63.3 16 16 0 0 1 32 47.3C32 39 38.5 31.1 48 21Z"
+      fill="url(#dropGrad)"
+    />
+    <path
+      d="M30.5 71.5c5.8-3.7 11.7-3.7 17.5 0s11.7 3.7 17.5 0"
+      fill="none"
+      stroke="#ffffff"
+      stroke-opacity="0.9"
+      stroke-width="5"
+      stroke-linecap="round"
+    />
+  </g>
+
+  <text
+    x="512"
+    y="660"
+    text-anchor="middle"
+    font-family="PingFang SC, Hiragino Sans GB, Heiti SC, sans-serif"
+    font-size="54"
+    font-weight="600"
+    letter-spacing="6"
+    fill="#0b1b33"
+  >清流记账</text>
+  <text
+    x="512"
+    y="706"
+    text-anchor="middle"
+    font-family="PingFang SC, Hiragino Sans GB, Heiti SC, sans-serif"
+    font-size="22"
+    letter-spacing="3"
+    fill="#5b6b86"
+  >每一笔，都清清楚楚</text>
+</svg>

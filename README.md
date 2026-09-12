@@ -31,6 +31,7 @@ npm run lint       # tsc --noEmit 类型检查
 src/
   App.tsx                    # 应用壳：状态、tab 路由、数据流、Toast
   index.css                  # 设计系统：壁纸、玻璃材质、系统色、动效、安全区
+  native.ts                  # 原生外壳适配：状态栏、Home 指示条、轻触反馈
   assets/
     app-icon.svg             # 应用图标（矢量，本地资源）
     avatar.svg               # 用户头像（矢量，本地资源）
@@ -45,6 +46,14 @@ src/
     Modals.tsx               # 搜索 / 选月 / 我的 / 新增账户 / 预算 / 汇率 底部抽屉
   data/mockData.ts           # 交易、账户、分类、预算等 mock 数据
   types.ts                   # 类型定义
+
+public/                      # favicon / PWA 图标 / manifest.webmanifest
+resources/                   # 图标与启动屏的矢量源文件（渲染成各尺寸 PNG）
+  app-icon-square.svg        # App Store 图标（满幅方形、无圆角，iOS 自行裁切）
+  splash.svg                 # 启动屏
+  favicon.svg                # 站点图标
+ios/                         # Capacitor 生成的 Xcode 工程（SPM，无需 CocoaPods）
+docs/APP_STORE_上架指南.md   # 上架流程、审核风险、常见错误
 scripts/
   collect-icons.py           # 扫描源码中用到 Material Symbols 图标名
   trim-icon-font.py          # 裁剪图标字体的 ligature 表
@@ -105,6 +114,39 @@ pyftsubset /tmp/ms-trimmed.ttf --text-file=/tmp/icons.txt --layout-features='*' 
 13. Google Fonts 图标字体在弱网或受限网络下会退化成 "close"、"coffee" 等文字 → 改为本地 80 KB 字体子集
 14. 搜索弹层只能靠「取消」关闭 → 支持点击遮罩关闭
 15. `animate-fadeIn` 类名此前无对应关键帧、`pt-safe` / `pb-safe` 未定义 → 补齐动效与安全区工具类
+16. 悬浮「记一笔」按钮压住「完成记账」主按钮（实测水平重叠 26 px）→ 进入记一笔页面时隐去 FAB，该页已有主按钮，此时按 + 也无额外含义
+
+## 打进 iOS App（Capacitor）
+
+除了网页版，本项目还接入了 Capacitor 8，可直接生成 Xcode 工程并上架 App Store。
+完整上架流程、审核风险与常见错误见 **[docs/APP_STORE_上架指南.md](docs/APP_STORE_上架指南.md)**。
+
+```bash
+npm run ios:sync    # = npm run build && npx cap sync ios
+npm run ios:open    # 在 Xcode 中打开 ios/App/App.xcodeproj
+```
+
+重新生成图标 / 启动屏 / PWA 素材（依赖 Playwright 与 Pillow）：
+
+```bash
+cd work && node render-assets.mjs      # resources/*.svg → iOS 图标、启动屏、PWA 图标
+cd work && node appstore-shots.mjs     # 生成 6.9" / 6.5" 两套 App Store 截图
+```
+
+### 原生外壳适配（避免「两条状态栏」）
+
+设计稿里画了 iOS 状态栏和 Home 指示条，网页上看是加分的，真机上叠上系统自己的就成了两条。
+`src/native.ts` 会检测 `Capacitor.isNativePlatform()`，在原生环境下给 `<html>` 加 `native-shell` 类：
+
+- 隐藏模拟状态栏与模拟 Home 指示条
+- 通过 `--app-status-bar-h` / `--app-home-indicator-h` 把占位高度交还给系统安全区
+- 状态栏改为覆盖在 WebView 之上（`setOverlaysWebView`），配合 `viewport-fit=cover` 实现满幅玻璃
+
+网页版不会命中这些分支，可以用 `work/verify-native-shell.mjs` 验证两种模式：
+
+```bash
+cd work && node verify-native-shell.mjs   # 注入 CapacitorCustomPlatform 模拟 iOS 环境
+```
 
 ## 部署
 

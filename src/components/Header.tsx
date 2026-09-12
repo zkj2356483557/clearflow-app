@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { TabType } from '../types';
 import { APP_AVATAR, APP_LOGO } from '../data/mockData';
+import { isNativeShell } from '../native';
 
 interface HeaderProps {
   currentTab: TabType;
@@ -26,15 +27,18 @@ export const Header: React.FC<HeaderProps> = ({ currentTab, onOpenProfile }) => 
 
   return (
     <header className="fixed top-0 left-1/2 -translate-x-1/2 z-40 w-full max-w-md px-3 pt-[max(env(safe-area-inset-top),10px)]">
-      {/* iOS status bar */}
-      <div className="h-7 flex items-center justify-between px-2 text-label">
-        <span className="text-[15px] font-semibold tabular-nums tracking-tight">{clock}</span>
-        <div className="flex items-center gap-1">
-          <span className="material-symbols-rounded text-[15px]">signal_cellular_alt</span>
-          <span className="material-symbols-rounded text-[15px]">wifi</span>
-          <span className="material-symbols-rounded text-[17px]">battery_full</span>
+      {/* iOS 状态栏（模拟）：仅在网页版绘制。原生 App 里系统状态栏已经在那里了，
+          再画一条会变成两条时间 + 两组电池图标。对应高度由 --app-status-bar-h 让给系统。 */}
+      {!isNativeShell && (
+        <div className="h-7 flex items-center justify-between px-2 text-label">
+          <span className="text-[15px] font-semibold tabular-nums tracking-tight">{clock}</span>
+          <div className="flex items-center gap-1">
+            <span className="material-symbols-rounded text-[15px]">signal_cellular_alt</span>
+            <span className="material-symbols-rounded text-[15px]">wifi</span>
+            <span className="material-symbols-rounded text-[17px]">battery_full</span>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Floating glass navigation bar */}
       <div className="glass glass-strong bg-white/70 rounded-[22px] h-[54px] px-3 flex items-center justify-between">

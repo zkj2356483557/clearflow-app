@@ -237,6 +237,23 @@
 /* ------------------------------------------------------------------
    Motion + helpers
    ------------------------------------------------------------------ */
+
+/* 原生外壳（Capacitor iOS）适配
+   ------------------------------------------------------------------
+   网页版会自己画一条 iOS 状态栏和 Home 指示条来还原设计稿；
+   真机上系统本来就有，所以原生环境要隐藏并把占位高度交还给系统安全区
+   （否则会出现两条状态栏 + 顶部多出一大块空白）。
+   `html.native-shell` 由 src/native.ts 注入，网页端不会命中。 */
+:root {
+  --app-status-bar-h: 28px;
+  --app-home-indicator-h: 13px;
+}
+
+html.native-shell {
+  --app-status-bar-h: 0px;
+  --app-home-indicator-h: 0px;
+}
+
 @layer utilities {
   .pt-safe {
     padding-top: env(safe-area-inset-top, 0px);
@@ -247,11 +264,11 @@
   }
 
   .pt-app-header {
-    padding-top: calc(env(safe-area-inset-top, 0px) + 100px);
+    padding-top: calc(env(safe-area-inset-top, 0px) + 72px + var(--app-status-bar-h));
   }
 
   .pb-app-nav {
-    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 118px);
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 105px + var(--app-home-indicator-h));
   }
 
   .scrollbar-none {
