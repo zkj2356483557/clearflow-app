@@ -1,4 +1,6 @@
 import { Transaction, AccountItem, CategoryItem } from '../types';
+import avatarUrl from '../assets/avatar.svg';
+import appIconUrl from '../assets/app-icon.svg';
 
 export const INITIAL_TRANSACTIONS: Transaction[] = [
   {
@@ -297,7 +299,7 @@ export const CATEGORY_EXPENSES_BREAKDOWN = [
     count: 36,
     avg: 70.23,
     icon: 'restaurant',
-    color: '#0b1c30',
+    color: '#007aff',
     subDetails: [
       { name: '工作日外卖', amount: 1120 },
       { name: '咖啡轻食', amount: 460 },
@@ -312,7 +314,7 @@ export const CATEGORY_EXPENSES_BREAKDOWN = [
     count: 19,
     avg: 76.04,
     icon: 'home',
-    color: '#006c49',
+    color: '#30b0c7',
     subDetails: [
       { name: '清洁耗材', amount: 320 },
       { name: '水电气网', amount: 680 },
@@ -325,7 +327,7 @@ export const CATEGORY_EXPENSES_BREAKDOWN = [
     count: 8,
     avg: 135.45,
     icon: 'sports_esports',
-    color: '#565e74',
+    color: '#af52de',
     subDetails: [
       { name: '云服务订阅', amount: 420 },
       { name: '主机配件', amount: 663 },
@@ -338,7 +340,7 @@ export const CATEGORY_EXPENSES_BREAKDOWN = [
     count: 14,
     avg: 43.0,
     icon: 'directions_subway',
-    color: '#8da0c0',
+    color: '#ff9500',
     subDetails: [
       { name: '通勤交通卡', amount: 240 },
       { name: '网约车出行', amount: 362 },
@@ -351,7 +353,7 @@ export const CATEGORY_EXPENSES_BREAKDOWN = [
     count: 6,
     avg: 60.2,
     icon: 'more_horiz',
-    color: '#c6c6cd',
+    color: '#8e8e93',
     subDetails: [
       { name: '快递与维修', amount: 180 },
       { name: '偶发随手礼', amount: 181 },
@@ -369,8 +371,6 @@ export const LAST_7_DAYS_TREND = [
   { date: '10/22', day: 'Sun', amount: 240, height: '42%' },
 ];
 
-export const APP_AVATAR =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuAhCNu7D2xSk3dQIoxLWnB8UyvnJhHmR8dD3zKROZIWdHVpKFN9dAClxOKazt9uP3PNnYz3-cl55NJh0FuLvx2MWBSssL_tLIj4Hn4k2D_GZc38O9b60RSCHUlENr7lAMfLv3F8ZbO0sbxZPR1BjDqd_0wZbbDPL7nYDSxaondd-beuaMeHAcVMzhUncSgAZummn1WOzGPKcnE-T7JREm9IXrIMe59FjPa53c0KiM5gvA1PR6xtNNBb';
+export const APP_AVATAR = avatarUrl;
 
-export const APP_LOGO =
-  'https://lh3.googleusercontent.com/aida/AEtjO1VQpQcuBLnkUbDU8J0QvfbfAL7p-awNiRgYgo-lE4ghGiMFtuy52LANwCbqz36ALbylsZYz2PbyOEjeYVt9At1p4dY43cDdVv2Dan25kf4RSn5FZhuDe5D7nFhP3Nnz27FwwkzU8piv4XgIcHZQv5NxEyIkiPc-tdcHZB2lPl_0ihslDUIp6LFA4iL5Y2qOfUOZVhN-EVIVpJ9Tz-b1qtj5XQovPG0PJJbDyzFB4As4wJVlluKoIQaJ2KM';
+export const APP_LOGO = appIconUrl;

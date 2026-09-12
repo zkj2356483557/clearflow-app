@@ -2,6 +2,33 @@ import React, { useState } from 'react';
 import { AccountItem, Transaction } from '../types';
 import { APP_AVATAR } from '../data/mockData';
 
+/* ------------------------------------------------------------------
+   Shared iOS sheet styling
+   ------------------------------------------------------------------ */
+const SHEET_WRAP = 'fixed inset-0 z-50 flex items-end justify-center bg-label/25 backdrop-blur-md';
+const SHEET_PANEL =
+  'glass glass-strong w-full max-w-md rounded-t-[34px] px-5 pt-3 pb-[calc(env(safe-area-inset-bottom,0px)+24px)] animate-sheetUp';
+const PRIMARY_BTN =
+  'w-full py-3 rounded-[18px] text-white text-[15px] font-semibold bg-[linear-gradient(180deg,#4aa4ff,#007aff)] ring-1 ring-white/40 shadow-[0_12px_26px_-10px_rgba(0,122,255,0.7)] active:scale-[0.98] transition-transform disabled:opacity-50';
+const SECONDARY_BTN =
+  'w-full py-3 rounded-[18px] glass glass-soft text-label text-[15px] font-medium active:scale-[0.98] transition-transform';
+const FIELD =
+  'w-full glass glass-soft rounded-[16px] px-3.5 py-3 text-[14px] text-label placeholder:text-label-3 focus:outline-none focus:ring-2 focus:ring-ios-blue/40';
+const ROW = 'glass glass-soft rounded-[18px] px-3.5 py-3 flex items-center justify-between text-[13px]';
+
+const SheetHeader: React.FC<{ title: string; onClose: () => void }> = ({ title, onClose }) => (
+  <div className="flex items-center justify-between pt-4 pb-3">
+    <h3 className="text-[17px] font-semibold text-label tracking-tight">{title}</h3>
+    <button
+      onClick={onClose}
+      aria-label="关闭"
+      className="glass glass-thin w-8 h-8 rounded-full flex items-center justify-center text-label-2 active:scale-95 transition-transform"
+    >
+      <span className="material-symbols-rounded text-[18px]">close</span>
+    </button>
+  </div>
+);
+
 // 1. Search Modal
 export const SearchModal: React.FC<{
   isOpen: boolean;
@@ -23,61 +50,61 @@ export const SearchModal: React.FC<{
     : [];
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-start justify-center pt-16 px-4">
-      <div className="bg-white rounded-2xl p-5 w-full max-w-md shadow-2xl space-y-4">
-        <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
-          <span className="material-symbols-outlined text-[22px] text-slate-400">search</span>
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="搜索账单、商户、分类或备注..."
-            autoFocus
-            className="w-full bg-transparent text-[14px] text-[#0b1c30] placeholder:text-slate-400 focus:outline-none"
-          />
-          {query && (
-            <button
-              onClick={() => setQuery('')}
-              className="text-slate-400 hover:text-slate-600 p-1"
-            >
-              <span className="material-symbols-outlined text-[18px]">cancel</span>
-            </button>
-          )}
+    <div
+      className="fixed inset-0 z-50 flex items-start justify-center bg-label/25 backdrop-blur-md px-3 pt-[max(env(safe-area-inset-top),12px)]"
+      onClick={onClose}
+    >
+      <div
+        className="glass glass-strong w-full max-w-md rounded-[28px] p-3 animate-fadeIn space-y-3"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center gap-2">
+          <div className="glass glass-soft flex items-center gap-2 flex-1 px-3 py-2.5 rounded-[16px]">
+            <span className="material-symbols-rounded text-[20px] text-label-3">search</span>
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="搜索账单、商户、分类或备注..."
+              autoFocus
+              className="w-full bg-transparent text-[14px] text-label placeholder:text-label-3 focus:outline-none"
+            />
+            {query && (
+              <button onClick={() => setQuery('')} aria-label="清空" className="text-label-3 active:scale-90 transition-transform">
+                <span className="material-symbols-rounded text-[18px]">cancel</span>
+              </button>
+            )}
+          </div>
           <button
             onClick={onClose}
-            className="text-[13px] text-[#45464d] hover:text-[#0b1c30] px-2 py-1"
+            className="text-[14px] text-ios-blue font-medium px-1 py-1 active:scale-95 transition-transform"
           >
             取消
           </button>
         </div>
 
-        <div className="max-h-80 overflow-y-auto space-y-2">
+        <div className="max-h-80 overflow-y-auto space-y-1.5 pb-1">
           {query.trim() === '' ? (
-            <div className="py-8 text-center text-slate-400 text-[13px]">
-              输入关键词搜索交易明细
-            </div>
+            <div className="py-8 text-center text-label-3 text-[13px]">输入关键词搜索交易明细</div>
           ) : results.length === 0 ? (
-            <div className="py-8 text-center text-slate-400 text-[13px]">
-              未找到相关记账记录
-            </div>
+            <div className="py-8 text-center text-label-3 text-[13px]">未找到相关记账记录</div>
           ) : (
             results.map((tx) => (
-              <div
-                key={tx.id}
-                className="flex items-center justify-between p-2.5 rounded-xl bg-[#eff4ff]/60 hover:bg-[#eff4ff]"
-              >
+              <div key={tx.id} className={`${ROW} !py-2.5`}>
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#0b1c30]">
-                    <span className="material-symbols-outlined text-[18px]">{tx.categoryIcon}</span>
+                  <div className="w-9 h-9 rounded-full bg-white/60 ring-1 ring-white/70 flex items-center justify-center text-label shrink-0">
+                    <span className="material-symbols-rounded text-[18px]">{tx.categoryIcon}</span>
                   </div>
                   <div className="flex flex-col min-w-0">
-                    <span className="text-[13px] font-medium text-[#0b1c30] truncate">{tx.title}</span>
-                    <span className="text-[11px] text-[#45464d]">{tx.date} · {tx.account}</span>
+                    <span className="text-[13px] font-medium text-label truncate">{tx.title}</span>
+                    <span className="text-[11px] text-label-2">
+                      {tx.date} · {tx.account}
+                    </span>
                   </div>
                 </div>
                 <span
-                  className={`text-[14px] font-semibold tabular-nums ${
-                    tx.type === 'income' ? 'text-[#006c49]' : 'text-[#0b1c30]'
+                  className={`text-[14px] font-semibold tabular-nums shrink-0 pl-2 ${
+                    tx.type === 'income' ? 'text-ios-green-ink' : 'text-label'
                   }`}
                 >
                   {tx.type === 'income' ? '+' : '-'}¥{tx.amount.toFixed(2)}
@@ -110,16 +137,12 @@ export const MonthPickerModal: React.FC<{
   ];
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl p-5 w-full max-w-xs shadow-2xl space-y-3">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
-          <h3 className="text-[15px] font-semibold text-[#0b1c30]">选择账单月份</h3>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
-            <span className="material-symbols-outlined text-[20px]">close</span>
-          </button>
-        </div>
+    <div className={SHEET_WRAP} onClick={onClose}>
+      <div className={SHEET_PANEL} onClick={(e) => e.stopPropagation()}>
+        <div className="sheet-grabber mx-auto" />
+        <SheetHeader title="选择账单月份" onClose={onClose} />
 
-        <div className="space-y-1.5 py-1">
+        <div className="space-y-2 pb-2">
           {months.map((m) => {
             const isSelected = selectedMonth === m;
             return (
@@ -129,14 +152,14 @@ export const MonthPickerModal: React.FC<{
                   onSelectMonth(m);
                   onClose();
                 }}
-                className={`w-full py-2.5 px-3.5 rounded-xl text-[13px] flex items-center justify-between transition-all ${
+                className={`w-full py-3 px-4 rounded-[18px] text-[14px] flex items-center justify-between transition-all active:scale-[0.98] ${
                   isSelected
-                    ? 'bg-black text-white font-medium shadow-xs'
-                    : 'bg-[#eff4ff]/60 hover:bg-[#eff4ff] text-[#0b1c30]'
+                    ? 'bg-ios-blue/15 text-ios-blue font-semibold ring-1 ring-ios-blue/25'
+                    : 'glass glass-soft text-label'
                 }`}
               >
                 <span>{m}</span>
-                {isSelected && <span className="material-symbols-outlined text-[18px]">check</span>}
+                {isSelected && <span className="material-symbols-rounded filled text-[19px]">check_circle</span>}
               </button>
             );
           })}
@@ -155,42 +178,38 @@ export const ProfileModal: React.FC<{
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl space-y-4">
-        <div className="flex items-center justify-between">
-          <span className="text-[12px] text-[#45464d]">个人账户</span>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
-            <span className="material-symbols-outlined text-[20px]">close</span>
-          </button>
-        </div>
+    <div className={SHEET_WRAP} onClick={onClose}>
+      <div className={SHEET_PANEL} onClick={(e) => e.stopPropagation()}>
+        <div className="sheet-grabber mx-auto" />
+        <SheetHeader title="个人账户" onClose={onClose} />
 
-        <div className="flex flex-col items-center py-2 text-center">
+        <div className="flex flex-col items-center pb-4 text-center">
           <img
             src={APP_AVATAR}
             alt="Profile"
-            className="w-16 h-16 rounded-full object-cover ring-3 ring-slate-100 shadow-md mb-2.5"
+            className="w-20 h-20 rounded-full object-cover ring-3 ring-white/70 shadow-[0_10px_26px_-12px_rgba(14,32,70,0.5)] mb-3"
           />
-          <h3 className="text-[17px] font-semibold text-[#0b1c30]">清流修行者</h3>
-          <span className="text-[12px] text-[#45464d] mt-0.5">zkj2356483557@gmail.com</span>
-          <span className="mt-2 px-2.5 py-0.5 rounded-full bg-[#6ffbbe]/40 text-[#00714d] text-[11px] font-medium">
+          <h3 className="text-[18px] font-semibold text-label">清流修行者</h3>
+          <span className="text-[12px] text-label-2 mt-0.5">zkj2356483557@gmail.com</span>
+          <span className="glass glass-thin mt-2.5 px-3 py-1 rounded-full text-ios-green-ink text-[11px] font-medium">
             已连续正念记账 42 天
           </span>
         </div>
 
-        <div className="bg-[#eff4ff] rounded-xl p-3.5 space-y-2.5 text-[13px]">
+        <div className="glass glass-soft rounded-[20px] p-4 space-y-3 text-[13px]">
           <div className="flex justify-between items-center">
-            <span className="text-[#45464d]">账本数据安全</span>
-            <span className="text-[#006c49] font-medium flex items-center gap-1">
-              <span className="material-symbols-outlined text-[16px]">verified_user</span> 已本地加密
+            <span className="text-label-2">账本数据安全</span>
+            <span className="text-ios-green-ink font-medium flex items-center gap-1">
+              <span className="material-symbols-rounded filled text-[16px]">verified_user</span> 已本地加密
             </span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-[#45464d]">当前货币标准</span>
-            <span className="font-medium text-[#0b1c30]">人民币 (CNY ¥)</span>
+            <span className="text-label-2">当前货币标准</span>
+            <span className="font-medium text-label">人民币 (CNY ¥)</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-[#45464d]">心境提醒</span>
-            <span className="font-medium text-[#0b1c30]">每日 21:00 每日复盘</span>
+            <span className="text-label-2">心境提醒</span>
+            <span className="font-medium text-label">每日 21:00 每日复盘</span>
           </div>
         </div>
 
@@ -199,7 +218,7 @@ export const ProfileModal: React.FC<{
             onShowToast('正在备份当前账目数据...');
             onClose();
           }}
-          className="w-full py-2.5 bg-black text-white rounded-xl text-[14px] font-medium hover:bg-slate-800 active:scale-98 transition-all"
+          className={`${PRIMARY_BTN} mt-4`}
         >
           导出本地账本备份
         </button>
@@ -250,33 +269,31 @@ export const AddAccountModal: React.FC<{
     onClose();
   };
 
-  return (
-    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl p-5 w-full max-w-sm shadow-2xl space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
-          <h3 className="text-[16px] font-semibold text-[#0b1c30]">新增资金账户</h3>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
-            <span className="material-symbols-outlined text-[20px]">close</span>
-          </button>
-        </div>
+  const groupOptions: { key: 'cash' | 'credit' | 'investment'; label: string }[] = [
+    { key: 'cash', label: '现金活期' },
+    { key: 'credit', label: '信用卡信贷' },
+    { key: 'investment', label: '投资理财' },
+  ];
 
-        <div className="space-y-3">
+  return (
+    <div className={SHEET_WRAP} onClick={onClose}>
+      <div className={SHEET_PANEL} onClick={(e) => e.stopPropagation()}>
+        <div className="sheet-grabber mx-auto" />
+        <SheetHeader title="新增资金账户" onClose={onClose} />
+
+        <div className="space-y-3.5 pb-1">
           <div>
-            <label className="text-[12px] text-[#45464d] block mb-1">账户类型</label>
-            <div className="grid grid-cols-3 gap-1.5">
-              {[
-                { key: 'cash', label: '现金活期' },
-                { key: 'credit', label: '信用卡信贷' },
-                { key: 'investment', label: '投资理财' },
-              ].map((item) => (
+            <label className="text-[12px] text-label-2 block mb-1.5 pl-1">账户类型</label>
+            <div className="glass glass-soft grid grid-cols-3 gap-1.5 p-1.5 rounded-[18px]">
+              {groupOptions.map((item) => (
                 <button
                   key={item.key}
                   type="button"
-                  onClick={() => setGroup(item.key as any)}
-                  className={`py-1.5 rounded-lg text-[12px] font-medium transition-all ${
+                  onClick={() => setGroup(item.key)}
+                  className={`py-2 rounded-[14px] text-[12px] transition-all duration-200 ${
                     group === item.key
-                      ? 'bg-black text-white shadow-xs'
-                      : 'bg-[#eff4ff] text-[#45464d] hover:bg-[#e5eeff]'
+                      ? 'bg-white/90 text-label font-semibold shadow-[0_2px_6px_rgba(14,32,70,0.14)] ring-1 ring-white/70'
+                      : 'text-label-2 active:scale-95'
                   }`}
                 >
                   {item.label}
@@ -286,50 +303,44 @@ export const AddAccountModal: React.FC<{
           </div>
 
           <div>
-            <label className="text-[12px] text-[#45464d] block mb-1">账户名称</label>
+            <label className="text-[12px] text-label-2 block mb-1.5 pl-1">账户名称</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="如：建设银行储蓄卡、京东白条"
-              className="w-full bg-[#eff4ff] rounded-xl px-3 py-2 text-[13px] text-[#0b1c30] placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-black"
+              className={FIELD}
             />
           </div>
 
           <div>
-            <label className="text-[12px] text-[#45464d] block mb-1">初始金额 (¥)</label>
+            <label className="text-[12px] text-label-2 block mb-1.5 pl-1">初始金额 (¥)</label>
             <input
               type="number"
               value={balance}
               onChange={(e) => setBalance(e.target.value)}
               placeholder="0.00"
-              className="w-full bg-[#eff4ff] rounded-xl px-3 py-2 text-[13px] text-[#0b1c30] placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-black"
+              className={FIELD}
             />
           </div>
 
           <div>
-            <label className="text-[12px] text-[#45464d] block mb-1">说明备注 (选填)</label>
+            <label className="text-[12px] text-label-2 block mb-1.5 pl-1">说明备注 (选填)</label>
             <input
               type="text"
               value={subText}
               onChange={(e) => setSubText(e.target.value)}
               placeholder="如：尾号 9812 · 备用金"
-              className="w-full bg-[#eff4ff] rounded-xl px-3 py-2 text-[13px] text-[#0b1c30] placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-black"
+              className={FIELD}
             />
           </div>
         </div>
 
-        <div className="pt-2 flex gap-2">
-          <button
-            onClick={onClose}
-            className="flex-1 py-2 rounded-xl bg-slate-100 text-[#45464d] text-[13px] hover:bg-slate-200"
-          >
+        <div className="pt-4 flex gap-2">
+          <button onClick={onClose} className={SECONDARY_BTN}>
             取消
           </button>
-          <button
-            onClick={handleSave}
-            className="flex-1 py-2 rounded-xl bg-black text-white text-[13px] font-medium hover:bg-slate-800"
-          >
+          <button onClick={handleSave} className={PRIMARY_BTN}>
             保存账户
           </button>
         </div>
@@ -349,19 +360,15 @@ export const AdjustBudgetModal: React.FC<{
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl p-5 w-full max-w-sm shadow-2xl space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
-          <h3 className="text-[16px] font-semibold text-[#0b1c30]">设定月度预算限额</h3>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
-            <span className="material-symbols-outlined text-[20px]">close</span>
-          </button>
-        </div>
+    <div className={SHEET_WRAP} onClick={onClose}>
+      <div className={SHEET_PANEL} onClick={(e) => e.stopPropagation()}>
+        <div className="sheet-grabber mx-auto" />
+        <SheetHeader title="设定月度预算限额" onClose={onClose} />
 
-        <div className="space-y-3 py-2">
-          <div className="text-center">
-            <span className="text-[12px] text-[#45464d]">10月预算总额</span>
-            <div className="text-[32px] font-bold text-[#0b1c30] tabular-nums mt-1">
+        <div className="space-y-2 pb-1">
+          <div className="text-center py-2">
+            <span className="text-[12px] text-label-2">10月预算总额</span>
+            <div className="text-[34px] font-bold text-label tabular-nums mt-1 tracking-tight">
               ¥{parseFloat(budgetVal || '0').toLocaleString('zh-CN')}
             </div>
           </div>
@@ -373,10 +380,11 @@ export const AdjustBudgetModal: React.FC<{
             step="500"
             value={budgetVal}
             onChange={(e) => setBudgetVal(e.target.value)}
-            className="w-full accent-black cursor-pointer"
+            className="ios-slider"
+            aria-label="月度预算限额"
           />
 
-          <div className="flex justify-between text-[11px] text-[#45464d]">
+          <div className="flex justify-between text-[11px] text-label-2 px-1">
             <span>¥3,000</span>
             <span>¥15,000</span>
             <span>¥30,000</span>
@@ -388,7 +396,7 @@ export const AdjustBudgetModal: React.FC<{
             onShowToast(`已更新月度预算为 ¥${parseFloat(budgetVal).toLocaleString('zh-CN')}`);
             onClose();
           }}
-          className="w-full py-2.5 bg-black text-white rounded-xl text-[14px] font-medium hover:bg-slate-800"
+          className={`${PRIMARY_BTN} mt-4`}
         >
           保存限额
         </button>
@@ -416,47 +424,41 @@ export const CurrencyConverterModal: React.FC<{
   ];
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl p-5 w-full max-w-sm shadow-2xl space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
-          <div className="flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-[20px] text-[#006c49]">currency_exchange</span>
-            <h3 className="text-[16px] font-semibold text-[#0b1c30]">实时汇率折算</h3>
-          </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
-            <span className="material-symbols-outlined text-[20px]">close</span>
-          </button>
-        </div>
+    <div className={SHEET_WRAP} onClick={onClose}>
+      <div className={SHEET_PANEL} onClick={(e) => e.stopPropagation()}>
+        <div className="sheet-grabber mx-auto" />
+        <SheetHeader title="实时汇率折算" onClose={onClose} />
 
-        <div className="bg-[#eff4ff] p-3 rounded-xl flex items-center justify-between">
-          <span className="text-[13px] text-[#45464d]">人民币 (CNY)</span>
+        <div className={`${ROW} mb-3`}>
+          <span className="text-[13px] text-label-2">人民币 (CNY)</span>
           <div className="flex items-center gap-1">
-            <span className="text-[14px] font-medium">¥</span>
+            <span className="text-[14px] font-medium text-label">¥</span>
             <input
               type="number"
               value={cnyAmount}
               onChange={(e) => setCnyAmount(e.target.value)}
-              className="w-24 text-right bg-white px-2 py-1 rounded-lg text-[14px] font-semibold text-[#0b1c30] focus:outline-none"
+              className="w-24 text-right bg-white/70 px-2.5 py-1.5 rounded-[12px] text-[14px] font-semibold text-label focus:outline-none focus:ring-2 focus:ring-ios-blue/40"
             />
           </div>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2 max-h-[46vh] overflow-y-auto pb-1">
           {rates.map((r) => {
             const converted = (num * r.rate).toLocaleString('zh-CN', {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
             });
             return (
-              <div
-                key={r.code}
-                className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100"
-              >
+              <div key={r.code} className={ROW}>
                 <div className="flex flex-col">
-                  <span className="text-[13px] font-medium text-[#0b1c30]">{r.name} ({r.code})</span>
-                  <span className="text-[11px] text-[#45464d]">汇率约 1 CNY = {r.rate} {r.code}</span>
+                  <span className="text-[13px] font-medium text-label">
+                    {r.name} ({r.code})
+                  </span>
+                  <span className="text-[11px] text-label-2">
+                    汇率约 1 CNY = {r.rate} {r.code}
+                  </span>
                 </div>
-                <span className="text-[15px] font-bold text-[#0b1c30] tabular-nums">
+                <span className="text-[15px] font-bold text-label tabular-nums">
                   {r.symbol} {converted}
                 </span>
               </div>
@@ -464,10 +466,7 @@ export const CurrencyConverterModal: React.FC<{
           })}
         </div>
 
-        <button
-          onClick={onClose}
-          className="w-full py-2.5 bg-black text-white rounded-xl text-[14px] font-medium hover:bg-slate-800"
-        >
+        <button onClick={onClose} className={`${PRIMARY_BTN} mt-4`}>
           完成
         </button>
       </div>

@@ -8,6 +8,12 @@ interface QuickAddViewProps {
   onShowToast: (msg: string) => void;
 }
 
+const MODES: { key: TransactionType; label: string }[] = [
+  { key: 'expense', label: '支出' },
+  { key: 'income', label: '收入' },
+  { key: 'transfer', label: '转账' },
+];
+
 export const QuickAddView: React.FC<QuickAddViewProps> = ({ accounts, onAddTransaction, onShowToast }) => {
   const [activeMode, setActiveMode] = useState<TransactionType>('expense');
   const [currentVal, setCurrentVal] = useState<string>('0');
@@ -138,54 +144,43 @@ export const QuickAddView: React.FC<QuickAddViewProps> = ({ accounts, onAddTrans
     setNote('');
   };
 
+  const keyBase =
+    'h-[54px] rounded-[18px] text-[22px] font-medium flex items-center justify-center active:scale-[0.96] transition-transform duration-150';
+  const numberKey = `${keyBase} glass glass-thin text-label active:bg-white/80`;
+  const operatorKey = `${keyBase} glass glass-soft text-ios-blue active:bg-white/80`;
+
   return (
     <div className="flex flex-col w-full max-w-md mx-auto px-4 pb-8">
       {/* Top Segmented Control */}
       <div className="flex items-center justify-center pt-1 pb-3">
-        <div className="inline-flex p-1 rounded-full bg-[#e5eeff] gap-1 shadow-xs">
-          <button
-            id="tab-expense"
-            type="button"
-            onClick={() => setActiveMode('expense')}
-            className={`px-5 py-1.5 rounded-full text-[12px] font-medium transition-all duration-200 ${
-              activeMode === 'expense'
-                ? 'bg-black text-white shadow-xs font-semibold'
-                : 'text-[#45464d] hover:text-[#0b1c30]'
-            }`}
-          >
-            支出
-          </button>
-          <button
-            id="tab-income"
-            type="button"
-            onClick={() => setActiveMode('income')}
-            className={`px-5 py-1.5 rounded-full text-[12px] font-medium transition-all duration-200 ${
-              activeMode === 'income'
-                ? 'bg-black text-white shadow-xs font-semibold'
-                : 'text-[#45464d] hover:text-[#0b1c30]'
-            }`}
-          >
-            收入
-          </button>
-          <button
-            id="tab-transfer"
-            type="button"
-            onClick={() => setActiveMode('transfer')}
-            className={`px-5 py-1.5 rounded-full text-[12px] font-medium transition-all duration-200 ${
-              activeMode === 'transfer'
-                ? 'bg-black text-white shadow-xs font-semibold'
-                : 'text-[#45464d] hover:text-[#0b1c30]'
-            }`}
-          >
-            转账
-          </button>
+        <div className="glass glass-soft inline-flex p-1 rounded-full gap-1">
+          {MODES.map((mode) => {
+            const isActive = activeMode === mode.key;
+            return (
+              <button
+                key={mode.key}
+                id={`tab-${mode.key}`}
+                type="button"
+                onClick={() => setActiveMode(mode.key)}
+                className={`px-5 py-1.5 rounded-full text-[12px] transition-all duration-200 ${
+                  isActive
+                    ? 'bg-white/90 text-label font-semibold shadow-[0_2px_6px_rgba(14,32,70,0.14)] ring-1 ring-white/70'
+                    : 'text-label-2 active:scale-95'
+                }`}
+              >
+                {mode.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {/* Large Amount Display Area */}
-      <div className="bg-white rounded-xl p-5 mb-3.5 shadow-xs border border-slate-100 flex flex-col justify-center relative overflow-hidden transition-all duration-200">
-        <div className="flex items-center justify-between">
-          <span className="text-[11px] text-[#45464d] tracking-wider uppercase" id="amount-label">
+      {/* Large Amount Display */}
+      <div className="glass rounded-[28px] p-5 mb-3.5 flex flex-col justify-center relative overflow-hidden transition-all duration-200">
+        <div className="absolute -right-12 -top-14 w-36 h-36 rounded-full bg-ios-blue/25 blur-3xl pointer-events-none" />
+
+        <div className="relative flex items-center justify-between">
+          <span className="text-[11px] text-label-2 tracking-wider uppercase" id="amount-label">
             {activeMode === 'expense'
               ? '当前支出金额'
               : activeMode === 'income'
@@ -193,42 +188,42 @@ export const QuickAddView: React.FC<QuickAddViewProps> = ({ accounts, onAddTrans
               : '当前转账金额'}
           </span>
           <div className="flex items-center gap-1.5">
-            <span className="inline-block w-2 h-2 rounded-full bg-[#006c49]" />
-            <span className="text-[11px] text-[#006c49] font-medium" id="category-badge-name">
+            <span className="inline-block w-2 h-2 rounded-full bg-ios-blue" />
+            <span className="text-[11px] text-label-2 font-medium" id="category-badge-name">
               {selectedCategory.name}
             </span>
           </div>
         </div>
 
-        <div className="flex items-baseline justify-between mt-2">
+        <div className="relative flex items-baseline justify-between mt-2">
           <div className="flex items-baseline gap-1.5 overflow-x-auto select-none py-1 scrollbar-none">
-            <span className="text-[28px] text-[#0b1c30] font-semibold tracking-tight">¥</span>
+            <span className="text-[28px] text-label font-semibold tracking-tight">¥</span>
             <span
-              className="text-[36px] leading-tight text-[#0b1c30] font-bold tracking-tight tabular-nums"
+              className="text-[36px] leading-tight text-label font-bold tracking-tight tabular-nums"
               id="display-amount"
             >
               {currentVal === '' ? '0' : currentVal}
             </span>
-            <span className="inline-block w-[2.5px] h-8 bg-black rounded-full animate-pulse ml-0.5 self-center" />
+            <span className="inline-block w-[2.5px] h-8 bg-ios-blue rounded-full animate-pulse ml-0.5 self-center" />
           </div>
 
-          {/* Backspace Button */}
+          {/* Clear Button */}
           <button
             aria-label="清空金额"
             type="button"
             onClick={clearAmount}
-            className="w-9 h-9 rounded-full bg-[#eff4ff] text-[#45464d] flex items-center justify-center hover:bg-[#e5eeff] active:scale-90 transition-all shrink-0"
+            className="glass glass-thin w-10 h-10 rounded-full text-label-2 flex items-center justify-center active:scale-90 transition-transform shrink-0"
           >
-            <span className="material-symbols-outlined text-[18px]">backspace</span>
+            <span className="material-symbols-rounded text-[19px]">backspace</span>
           </button>
         </div>
       </div>
 
-      {/* Categories Matrix */}
-      <div className="bg-white rounded-xl p-4 mb-3.5 shadow-xs border border-slate-100">
+      {/* Category Matrix */}
+      <div className="glass rounded-[26px] p-4 mb-3.5">
         <div className="flex items-center justify-between mb-3 px-1">
-          <span className="text-[12px] text-[#0b1c30] font-semibold">选择交易类别</span>
-          <span className="text-[11px] text-[#45464d]">点击快速选择</span>
+          <span className="text-[12px] text-label font-semibold">选择交易类别</span>
+          <span className="text-[11px] text-label-3">点击快速选择</span>
         </div>
 
         <div className="grid grid-cols-5 gap-y-3 gap-x-2 text-center" id="category-grid">
@@ -238,60 +233,59 @@ export const QuickAddView: React.FC<QuickAddViewProps> = ({ accounts, onAddTrans
               <button
                 key={cat.id}
                 type="button"
+                aria-label={cat.name}
                 onClick={() => setSelectedCategory(cat)}
                 className="category-btn group flex flex-col items-center gap-1.5 focus:outline-none"
               >
                 <div
-                  className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-150 transform group-active:scale-95 ${
+                  className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-150 group-active:scale-95 ${
                     isSelected
-                      ? 'bg-black text-white shadow-xs'
-                      : 'bg-[#eff4ff] text-[#0b1c30] hover:bg-[#e5eeff]'
+                      ? 'text-white bg-[linear-gradient(180deg,#4aa4ff,#007aff)] ring-1 ring-white/50 shadow-[0_10px_22px_-8px_rgba(0,122,255,0.75),inset_0_1px_0_rgba(255,255,255,0.5)]'
+                      : 'glass glass-thin text-label'
                   }`}
                 >
-                  <span className="material-symbols-outlined text-[22px]">{cat.icon}</span>
+                  <span className={`material-symbols-rounded text-[22px] ${isSelected ? 'filled' : ''}`}>
+                    {cat.icon}
+                  </span>
                 </div>
-                <span
-                  className={`text-[11px] ${
-                    isSelected ? 'text-[#0b1c30] font-semibold' : 'text-[#45464d]'
-                  }`}
-                >
+                <span className={`text-[11px] ${isSelected ? 'text-ios-blue font-semibold' : 'text-label-2'}`}>
                   {cat.shortName}
                 </span>
               </button>
             );
           })}
 
-          {/* More Categories Button */}
+          {/* More Categories */}
           <button
             type="button"
             onClick={() => onShowToast('更多自定义标签库加载中...')}
             className="group flex flex-col items-center gap-1.5 focus:outline-none"
           >
-            <div className="w-12 h-12 rounded-full bg-[#e5eeff] text-[#45464d] flex items-center justify-center shadow-none transition-all duration-150 group-active:scale-95 hover:text-[#0b1c30]">
-              <span className="material-symbols-outlined text-[22px]">more_horiz</span>
+            <div className="glass glass-soft w-12 h-12 rounded-full text-label-2 flex items-center justify-center transition-all duration-150 group-active:scale-95">
+              <span className="material-symbols-rounded text-[22px]">more_horiz</span>
             </div>
-            <span className="text-[11px] text-[#45464d]">更多</span>
+            <span className="text-[11px] text-label-2">更多</span>
           </button>
         </div>
       </div>
 
       {/* Account, Date, and Note Pills */}
-      <div className="bg-white rounded-xl p-3 mb-3.5 shadow-xs border border-slate-100 flex flex-col gap-2">
+      <div className="glass rounded-[26px] p-3 mb-3.5 flex flex-col gap-2">
         <div className="flex items-center gap-2">
           {/* Account Selector */}
           <button
             id="account-pill"
             type="button"
             onClick={cycleAccount}
-            className="flex-1 flex items-center justify-between px-3 py-2 rounded-lg bg-[#eff4ff] hover:bg-[#e5eeff] transition-colors"
+            className="glass glass-soft flex-1 flex items-center justify-between px-3 py-2.5 rounded-[16px] active:scale-[0.98] transition-transform"
           >
             <div className="flex items-center gap-2 min-w-0">
-              <span className="material-symbols-outlined text-[18px] text-black">credit_card</span>
-              <span className="text-[11px] text-[#0b1c30] font-medium truncate" id="account-text">
+              <span className="material-symbols-rounded text-[18px] text-ios-blue">credit_card</span>
+              <span className="text-[12px] text-label font-medium truncate" id="account-text">
                 {selectedAccount}
               </span>
             </div>
-            <span className="material-symbols-outlined text-[16px] text-[#45464d]">expand_more</span>
+            <span className="material-symbols-rounded text-[17px] text-label-2">expand_more</span>
           </button>
 
           {/* Date Selector */}
@@ -299,21 +293,21 @@ export const QuickAddView: React.FC<QuickAddViewProps> = ({ accounts, onAddTrans
             id="date-pill"
             type="button"
             onClick={cycleDate}
-            className="w-28 flex items-center justify-between px-3 py-2 rounded-lg bg-[#eff4ff] hover:bg-[#e5eeff] transition-colors"
+            className="glass glass-soft w-28 flex items-center justify-between px-3 py-2.5 rounded-[16px] active:scale-[0.98] transition-transform"
           >
             <div className="flex items-center gap-1.5 min-w-0">
-              <span className="material-symbols-outlined text-[18px] text-black">calendar_today</span>
-              <span className="text-[11px] text-[#0b1c30] font-medium" id="date-text">
+              <span className="material-symbols-rounded text-[18px] text-ios-blue">calendar_month</span>
+              <span className="text-[12px] text-label font-medium" id="date-text">
                 {selectedDate}
               </span>
             </div>
-            <span className="material-symbols-outlined text-[16px] text-[#45464d]">expand_more</span>
+            <span className="material-symbols-rounded text-[17px] text-label-2">expand_more</span>
           </button>
         </div>
 
-        {/* Note Input Field */}
-        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#eff4ff]">
-          <span className="material-symbols-outlined text-[18px] text-[#45464d]">edit_note</span>
+        {/* Note Input */}
+        <div className="glass glass-soft flex items-center gap-2 px-3 py-2.5 rounded-[16px]">
+          <span className="material-symbols-rounded text-[18px] text-label-3">edit_note</span>
           <input
             id="note-input"
             type="text"
@@ -323,127 +317,71 @@ export const QuickAddView: React.FC<QuickAddViewProps> = ({ accounts, onAddTrans
               if (e.key === 'Enter') submitEntry();
             }}
             placeholder="添加备注（如：同事聚餐、超市生鲜）"
-            className="w-full bg-transparent text-[13px] text-[#0b1c30] placeholder:text-[#76777d] focus:outline-none"
+            className="w-full bg-transparent text-[13px] text-label placeholder:text-label-3 focus:outline-none"
           />
         </div>
       </div>
 
-      {/* Custom Minimalist Numeric Keypad */}
+      {/* Custom Numeric Keypad */}
       <div className="grid grid-cols-4 gap-2 select-none">
         {/* Row 1 */}
-        <button
-          type="button"
-          onClick={() => inputKey('7')}
-          className="h-12 py-2.5 rounded-xl bg-white text-[#0b1c30] text-[20px] font-semibold shadow-xs border border-slate-100 active:bg-[#e5eeff] active:scale-98 transition-all flex items-center justify-center"
-        >
+        <button type="button" onClick={() => inputKey('7')} className={numberKey}>
           7
         </button>
-        <button
-          type="button"
-          onClick={() => inputKey('8')}
-          className="h-12 py-2.5 rounded-xl bg-white text-[#0b1c30] text-[20px] font-semibold shadow-xs border border-slate-100 active:bg-[#e5eeff] active:scale-98 transition-all flex items-center justify-center"
-        >
+        <button type="button" onClick={() => inputKey('8')} className={numberKey}>
           8
         </button>
-        <button
-          type="button"
-          onClick={() => inputKey('9')}
-          className="h-12 py-2.5 rounded-xl bg-white text-[#0b1c30] text-[20px] font-semibold shadow-xs border border-slate-100 active:bg-[#e5eeff] active:scale-98 transition-all flex items-center justify-center"
-        >
+        <button type="button" onClick={() => inputKey('9')} className={numberKey}>
           9
         </button>
-        <button
-          type="button"
-          onClick={() => inputKey('+')}
-          className="h-12 py-2.5 rounded-xl bg-[#eff4ff] text-[#0b1c30] text-[20px] font-medium shadow-xs border border-slate-100 active:bg-[#e5eeff] active:scale-98 transition-all flex items-center justify-center"
-        >
-          <span className="material-symbols-outlined text-[22px]">add</span>
+        <button type="button" aria-label="加" onClick={() => inputKey('+')} className={operatorKey}>
+          <span className="material-symbols-rounded text-[22px]">add</span>
         </button>
 
         {/* Row 2 */}
-        <button
-          type="button"
-          onClick={() => inputKey('4')}
-          className="h-12 py-2.5 rounded-xl bg-white text-[#0b1c30] text-[20px] font-semibold shadow-xs border border-slate-100 active:bg-[#e5eeff] active:scale-98 transition-all flex items-center justify-center"
-        >
+        <button type="button" onClick={() => inputKey('4')} className={numberKey}>
           4
         </button>
-        <button
-          type="button"
-          onClick={() => inputKey('5')}
-          className="h-12 py-2.5 rounded-xl bg-white text-[#0b1c30] text-[20px] font-semibold shadow-xs border border-slate-100 active:bg-[#e5eeff] active:scale-98 transition-all flex items-center justify-center"
-        >
+        <button type="button" onClick={() => inputKey('5')} className={numberKey}>
           5
         </button>
-        <button
-          type="button"
-          onClick={() => inputKey('6')}
-          className="h-12 py-2.5 rounded-xl bg-white text-[#0b1c30] text-[20px] font-semibold shadow-xs border border-slate-100 active:bg-[#e5eeff] active:scale-98 transition-all flex items-center justify-center"
-        >
+        <button type="button" onClick={() => inputKey('6')} className={numberKey}>
           6
         </button>
-        <button
-          type="button"
-          onClick={() => inputKey('-')}
-          className="h-12 py-2.5 rounded-xl bg-[#eff4ff] text-[#0b1c30] text-[20px] font-medium shadow-xs border border-slate-100 active:bg-[#e5eeff] active:scale-98 transition-all flex items-center justify-center"
-        >
-          <span className="material-symbols-outlined text-[22px]">remove</span>
+        <button type="button" aria-label="减" onClick={() => inputKey('-')} className={operatorKey}>
+          <span className="material-symbols-rounded text-[22px]">remove</span>
         </button>
 
         {/* Row 3 */}
-        <button
-          type="button"
-          onClick={() => inputKey('1')}
-          className="h-12 py-2.5 rounded-xl bg-white text-[#0b1c30] text-[20px] font-semibold shadow-xs border border-slate-100 active:bg-[#e5eeff] active:scale-98 transition-all flex items-center justify-center"
-        >
+        <button type="button" onClick={() => inputKey('1')} className={numberKey}>
           1
         </button>
-        <button
-          type="button"
-          onClick={() => inputKey('2')}
-          className="h-12 py-2.5 rounded-xl bg-white text-[#0b1c30] text-[20px] font-semibold shadow-xs border border-slate-100 active:bg-[#e5eeff] active:scale-98 transition-all flex items-center justify-center"
-        >
+        <button type="button" onClick={() => inputKey('2')} className={numberKey}>
           2
         </button>
-        <button
-          type="button"
-          onClick={() => inputKey('3')}
-          className="h-12 py-2.5 rounded-xl bg-white text-[#0b1c30] text-[20px] font-semibold shadow-xs border border-slate-100 active:bg-[#e5eeff] active:scale-98 transition-all flex items-center justify-center"
-        >
+        <button type="button" onClick={() => inputKey('3')} className={numberKey}>
           3
         </button>
-        <button
-          type="button"
-          onClick={deleteDigit}
-          className="h-12 py-2.5 rounded-xl bg-[#eff4ff] text-[#0b1c30] text-[20px] font-medium shadow-xs border border-slate-100 active:bg-[#e5eeff] active:scale-98 transition-all flex items-center justify-center"
-        >
-          <span className="material-symbols-outlined text-[22px]">backspace</span>
+        <button type="button" aria-label="退格" onClick={deleteDigit} className={operatorKey}>
+          <span className="material-symbols-rounded text-[22px]">backspace</span>
         </button>
 
         {/* Row 4 */}
-        <button
-          type="button"
-          onClick={() => inputKey('.')}
-          className="h-12 py-2.5 rounded-xl bg-white text-[#0b1c30] text-[20px] font-bold shadow-xs border border-slate-100 active:bg-[#e5eeff] active:scale-98 transition-all flex items-center justify-center"
-        >
+        <button type="button" onClick={() => inputKey('.')} className={numberKey}>
           .
         </button>
-        <button
-          type="button"
-          onClick={() => inputKey('0')}
-          className="h-12 py-2.5 rounded-xl bg-white text-[#0b1c30] text-[20px] font-semibold shadow-xs border border-slate-100 active:bg-[#e5eeff] active:scale-98 transition-all flex items-center justify-center"
-        >
+        <button type="button" onClick={() => inputKey('0')} className={numberKey}>
           0
         </button>
 
-        {/* Submit Button (Col Span 2) */}
+        {/* Submit (Col Span 2) */}
         <button
           id="submit-btn"
           type="button"
           onClick={submitEntry}
-          className="col-span-2 h-12 py-2.5 rounded-xl bg-black text-white text-[14px] font-semibold shadow-md active:scale-98 transition-all flex items-center justify-center gap-1.5 hover:bg-slate-900"
+          className="col-span-2 h-[54px] rounded-[18px] text-white text-[15px] font-semibold flex items-center justify-center gap-1.5 active:scale-[0.97] transition-transform bg-[linear-gradient(180deg,#4aa4ff,#007aff)] ring-1 ring-white/40 shadow-[0_14px_28px_-10px_rgba(0,122,255,0.75),inset_0_1px_0_rgba(255,255,255,0.5)]"
         >
-          <span className="material-symbols-outlined text-[20px]">check</span>
+          <span className="material-symbols-rounded filled text-[21px]">check_circle</span>
           <span>完成记账</span>
         </button>
       </div>

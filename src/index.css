@@ -1,87 +1,348 @@
 @import "tailwindcss";
 
+/* ------------------------------------------------------------------
+   清流记账 · iOS 26 "Liquid Glass" design system
+   ------------------------------------------------------------------ */
 @theme {
-  --font-sans: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-display: 'Manrope', sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Inter',
+    'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
 
-  --color-surface: #f8f9ff;
-  --color-surface-dim: #cbdbf5;
-  --color-surface-bright: #f8f9ff;
-  --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #eff4ff;
-  --color-surface-container: #e5eeff;
-  --color-surface-container-high: #dce9ff;
-  --color-surface-container-highest: #d3e4fe;
-  
-  --color-on-surface: #0b1c30;
-  --color-on-surface-variant: #45464d;
-  --color-inverse-surface: #213145;
-  --color-inverse-on-surface: #eaf1ff;
-  
-  --color-outline: #76777d;
-  --color-outline-variant: #c6c6cd;
-  --color-surface-tint: #565e74;
-  
-  --color-primary: #000000;
-  --color-on-primary: #ffffff;
-  --color-primary-container: #131b2e;
-  --color-on-primary-container: #7c839b;
-  --color-primary-fixed: #dae2fd;
-  --color-primary-fixed-dim: #bec6e0;
-  --color-on-primary-fixed: #131b2e;
-  --color-on-primary-fixed-variant: #3f465c;
-  
-  --color-secondary: #006c49;
-  --color-on-secondary: #ffffff;
-  --color-secondary-container: #6cf8bb;
-  --color-on-secondary-container: #00714d;
-  --color-secondary-fixed: #6ffbbe;
-  --color-secondary-fixed-dim: #4edea3;
-  --color-on-secondary-fixed: #002113;
-  --color-on-secondary-fixed-variant: #005236;
-  
-  --color-tertiary: #000000;
-  --color-on-tertiary: #ffffff;
-  --color-tertiary-container: #40000d;
-  --color-on-tertiary-container: #f23d5c;
-  --color-tertiary-fixed: #ffdadb;
-  --color-tertiary-fixed-dim: #ffb2b7;
-  --color-on-tertiary-fixed: #40000d;
-  --color-on-tertiary-fixed-variant: #92002a;
-  
-  --color-error: #ba1a1a;
-  --color-on-error: #ffffff;
-  --color-error-container: #ffdad6;
-  --color-on-error-container: #93000a;
+  /* iOS system colours */
+  --color-ios-blue: #007aff;
+  --color-ios-blue-deep: #0a63d6;
+  --color-ios-green: #34c759;
+  --color-ios-green-ink: #1f8a3b;
+  --color-ios-red: #ff3b30;
+  --color-ios-red-ink: #d70015;
+  --color-ios-orange: #ff9500;
+  --color-ios-teal: #30b0c7;
+  --color-ios-purple: #af52de;
+  --color-ios-indigo: #5856d6;
+  --color-ios-gray: #8e8e93;
 
-  --spacing-space-xs: 0.25rem;
-  --spacing-space-sm: 0.5rem;
-  --spacing-space-md: 1rem;
-  --spacing-space-lg: 1.5rem;
-  --spacing-space-xl: 2.5rem;
-  --spacing-margin-mobile: 1rem;
-  --spacing-gutter-mobile: 0.75rem;
+  /* iOS label hierarchy */
+  --color-label: #1c1c1e;
+  --color-label-2: #5b5b63;
+  --color-label-3: #8e8e93;
+}
+
+/* Self-hosted icon font: Material Symbols Rounded, trimmed to the 53 icons this
+   app uses (68 KB instead of 5.4 MB) so the app never depends on a CDN. */
+@font-face {
+  font-family: 'Material Symbols Rounded';
+  font-style: normal;
+  font-weight: 100 700;
+  font-display: block;
+  src: url('./assets/fonts/material-symbols.woff2') format('woff2-variations');
+}
+
+.material-symbols-rounded {
+  font-family: 'Material Symbols Rounded';
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'rlig' 1, 'rclt' 1;
+  font-feature-settings: 'rlig' 1, 'rclt' 1;
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.material-symbols-rounded.filled {
+  font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
 }
 
 @layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
     font-family: var(--font-sans);
-    background-color: #f8f9ff;
-    color: #0b1c30;
+    color: var(--color-label);
+    background-color: #e9f0fb;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.011em;
+    min-height: 100dvh;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
   }
+
+  input,
+  textarea {
+    user-select: text;
+  }
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  * {
+    scrollbar-width: none;
+  }
 }
 
-/* Custom scrollbar hiding */
-::-webkit-scrollbar {
-  display: none;
-}
-* {
-  scrollbar-width: none;
+/* ------------------------------------------------------------------
+   Wallpaper: the colour field the glass refracts
+   ------------------------------------------------------------------ */
+.ios-wallpaper {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  overflow: hidden;
+  background:
+    radial-gradient(115% 70% at 50% 0%, #f4f8ff 0%, #eaf1ff 38%, #f7f2ff 72%, #eefaf6 100%);
 }
 
-.tabular-nums {
-  font-variant-numeric: tabular-nums;
+.ios-wallpaper .blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(58px);
+  animation: blob-drift 26s ease-in-out infinite alternate;
+}
+
+.blob-a {
+  width: 400px;
+  height: 400px;
+  left: -130px;
+  top: -90px;
+  background: radial-gradient(circle at 32% 32%, #8fcbff, #3d7dff 72%);
+  opacity: 0.5;
+}
+
+.blob-b {
+  width: 340px;
+  height: 340px;
+  right: -140px;
+  top: 110px;
+  background: radial-gradient(circle at 32% 32%, #8cf3cd, #22bf8a 72%);
+  opacity: 0.42;
+  animation-delay: -7s;
+}
+
+.blob-c {
+  width: 380px;
+  height: 380px;
+  left: -80px;
+  bottom: -130px;
+  background: radial-gradient(circle at 32% 32%, #d9bcff, #8f5cf7 72%);
+  opacity: 0.44;
+  animation-delay: -13s;
+}
+
+.blob-d {
+  width: 300px;
+  height: 300px;
+  right: -90px;
+  bottom: 40px;
+  background: radial-gradient(circle at 32% 32%, #ffdcad, #ff9f0a 72%);
+  opacity: 0.38;
+  animation-delay: -19s;
+}
+
+.blob-e {
+  width: 260px;
+  height: 260px;
+  left: 48%;
+  top: 38%;
+  background: radial-gradient(circle at 32% 32%, #ffc4d7, #ff2d55 72%);
+  opacity: 0.26;
+  animation-delay: -4s;
+}
+
+@keyframes blob-drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(22px, -28px, 0) scale(1.12);
+  }
+}
+
+/* ------------------------------------------------------------------
+   Liquid Glass material
+   .glass        default card material
+   .glass-thin   lighter, sits close to the wallpaper
+   .glass-strong heavier, for bars / sheets that need legibility
+   .glass-soft   nested surfaces without the large drop shadow
+   .glass-hud    dark translucent material (toasts, HUDs)
+   ------------------------------------------------------------------ */
+@layer components {
+  .glass {
+    position: relative;
+    background-color: rgba(255, 255, 255, var(--glass-alpha, 0.5));
+    background-image: linear-gradient(
+      155deg,
+      rgba(255, 255, 255, 0.55) 0%,
+      rgba(255, 255, 255, 0.12) 38%,
+      rgba(255, 255, 255, 0) 58%
+    );
+    backdrop-filter: blur(var(--glass-blur, 28px)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--glass-blur, 28px)) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.62);
+    border-radius: var(--glass-radius, 26px);
+    box-shadow:
+      0 20px 42px -24px rgba(14, 32, 70, 0.4),
+      0 1px 2px rgba(14, 32, 70, 0.05),
+      inset 0 1px 0 rgba(255, 255, 255, 0.92);
+  }
+
+  .glass-thin {
+    --glass-alpha: 0.32;
+    --glass-blur: 20px;
+  }
+
+  .glass-strong {
+    --glass-alpha: 0.68;
+    --glass-blur: 36px;
+  }
+
+  .glass-soft {
+    --glass-alpha: 0.4;
+    --glass-blur: 18px;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.8),
+      inset 0 0 0 0.5px rgba(255, 255, 255, 0.45),
+      0 1px 2px rgba(14, 32, 70, 0.03);
+  }
+
+  .glass-hud {
+    background-color: rgba(28, 28, 30, 0.6);
+    background-image: linear-gradient(
+      160deg,
+      rgba(255, 255, 255, 0.18) 0%,
+      rgba(255, 255, 255, 0) 52%
+    );
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow:
+      0 24px 48px -24px rgba(0, 0, 0, 0.55),
+      inset 0 1px 0 rgba(255, 255, 255, 0.24);
+    color: #ffffff;
+  }
+
+  .sheet-grabber {
+    width: 36px;
+    height: 5px;
+    border-radius: 9999px;
+    background-color: rgba(28, 28, 30, 0.18);
+  }
+}
+
+/* ------------------------------------------------------------------
+   Motion + helpers
+   ------------------------------------------------------------------ */
+@layer utilities {
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .pt-app-header {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 100px);
+  }
+
+  .pb-app-nav {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 118px);
+  }
+
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes sheet-up {
+  from {
+    opacity: 0;
+    transform: translateY(36px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fadeIn {
+  animation: fade-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-sheetUp {
+  animation: sheet-up 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-popIn {
+  animation: pop-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* iOS style slider (budget sheet) */
+input[type='range'].ios-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 28px;
+  background: transparent;
+  cursor: pointer;
+}
+
+input[type='range'].ios-slider::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: inset 0 1px 3px rgba(14, 32, 70, 0.16);
+}
+
+input[type='range'].ios-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  margin-top: -9px;
+  border-radius: 9999px;
+  background: #ffffff;
+  box-shadow:
+    0 2px 8px rgba(14, 32, 70, 0.3),
+    inset 0 0 0 0.5px rgba(14, 32, 70, 0.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ios-wallpaper .blob {
+    animation: none;
+  }
 }

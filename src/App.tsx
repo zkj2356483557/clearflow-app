@@ -67,12 +67,20 @@ export default function App() {
   };
 
   return (
-    <div className="bg-[#f8f9ff] text-[#0b1c30] min-h-screen flex flex-col antialiased select-none font-sans">
+    <div className="relative min-h-screen flex flex-col antialiased select-none">
+      {/* iOS wallpaper — the colour field the glass refracts */}
+      <div className="ios-wallpaper" aria-hidden="true">
+        <span className="blob blob-a" />
+        <span className="blob blob-b" />
+        <span className="blob blob-c" />
+        <span className="blob blob-d" />
+        <span className="blob blob-e" />
+      </div>
       {/* Fixed Top Header */}
       <Header currentTab={currentTab} onOpenProfile={() => setIsProfileOpen(true)} />
 
       {/* Main Scrollable Content Area */}
-      <main className="flex-1 flex flex-col relative w-full pt-16 pb-24 max-w-md mx-auto">
+      <main className="relative flex-1 flex flex-col w-full max-w-md mx-auto pt-app-header pb-app-nav">
         {currentTab === 'timeline' && (
           <TimelineView
             selectedMonth={selectedMonth}
@@ -115,12 +123,12 @@ export default function App() {
       {/* Success / Info Toast Popup */}
       <div
         id="toast-success"
-        className={`fixed bottom-24 left-1/2 -translate-x-1/2 z-50 bg-[#213145] text-[#eaf1ff] px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 transition-all duration-300 pointer-events-none ${
-          toastMessage ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+        className={`fixed bottom-[calc(env(safe-area-inset-bottom,0px)+150px)] left-1/2 -translate-x-1/2 z-50 glass-hud rounded-full pl-3 pr-4 py-2.5 flex items-center gap-2 transition-all duration-300 ${
+          toastMessage ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
         }`}
       >
-        <span className="material-symbols-outlined text-[#6ffbbe] text-[20px]">check_circle</span>
-        <span className="text-[12px] font-medium" id="toast-message">
+        <span className="material-symbols-rounded text-ios-green text-[20px]">check_circle</span>
+        <span className="text-[13px] font-medium" id="toast-message">
           {toastMessage}
         </span>
       </div>
